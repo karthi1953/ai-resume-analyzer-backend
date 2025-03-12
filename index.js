@@ -32,8 +32,13 @@ axiosRetry(axios, {
 });
 
 // Middleware
-app.use(cors({ origin: "http://localhost:3000" }));
-app.use(express.json());
+app.use(
+  cors({
+    origin: "https://ai-resume-analyzer-fawn.vercel.app", // Allow requests from Vercel frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);app.use(express.json());
 
 // TogetherAI Configuration
 const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
