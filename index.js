@@ -7,7 +7,7 @@ const axios = require("axios");
 const pdf = require("pdf-parse");
 const mammoth = require("mammoth");
 const rateLimit = require("express-rate-limit");
-const axiosRetry = require("axios-retry").default; // Correct import
+const axiosRetry = require("axios-retry").default;
 
 // Initialize Express app
 const app = express();
@@ -38,7 +38,8 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
-);app.use(express.json());
+);
+app.use(express.json());
 
 // TogetherAI Configuration
 const TOGETHER_API_KEY = process.env.TOGETHER_API_KEY;
@@ -157,7 +158,6 @@ app.post("/analyze", upload.single("resume"), async (req, res) => {
 
     // 6. Send response
     res.json({ analysis });
-
   } catch (error) {
     console.error("Server Error:", {
       message: error.message,
