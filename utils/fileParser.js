@@ -25,7 +25,6 @@ async function extractTextFromFile(fileBuffer, mimetype, filename) {
   } catch (error) {
     console.error("Extraction failed:", error.message);
     
-    // Try fallback method
     try {
       console.log("Trying fallback text extraction...");
       const fallbackText = await extractWithFallbackMethods(fileBuffer, filename);
@@ -41,10 +40,9 @@ async function extractTextFromFile(fileBuffer, mimetype, filename) {
   }
 }
 
-// Improved PDF extraction with multiple strategies
 async function extractFromPDF(fileBuffer) {
   try {
-    // Strategy 1: Standard pdf-parse
+    //  Standard pdf-parse
     const data = await pdf(fileBuffer);
     const text = data.text || "";
     
@@ -53,7 +51,7 @@ async function extractFromPDF(fileBuffer) {
       return text;
     }
     
-    // Strategy 2: Try with different options
+    //  Try with different options
     try {
       const data2 = await pdf(fileBuffer, {
         max: 0, // No page limit
@@ -69,7 +67,7 @@ async function extractFromPDF(fileBuffer) {
       console.log("Alternative PDF parsing failed:", e.message);
     }
     
-    // Strategy 3: Try to extract raw text from buffer
+    // Try to extract raw text from buffer
     const rawText = extractRawTextFromBuffer(fileBuffer);
     if (rawText && rawText.length > 100) {
       console.log(`Raw buffer extraction: ${rawText.length} chars`);
@@ -87,7 +85,6 @@ async function extractFromPDF(fileBuffer) {
 // Extract raw text from buffer (for corrupted PDFs)
 function extractRawTextFromBuffer(buffer) {
   try {
-    // Convert buffer to string and look for text patterns
     const bufferString = buffer.toString('latin1');
     
     // Common PDF text patterns

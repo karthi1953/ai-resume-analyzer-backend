@@ -1,8 +1,6 @@
-// PRO ATS ANALYZER - INDUSTRY STANDARD ACCURACY
 async function calculateATSScore(resumeText) {
     console.log("🏆 PRO ATS Analysis Engine Starting...");
     
-    // Multi-phase analysis
     const analysis = await performComprehensiveAnalysis(resumeText);
     
     console.log(`🏆 PRO Analysis Complete: ${analysis.ats_score}/100`);
@@ -28,10 +26,9 @@ async function calculateATSScore(resumeText) {
     const insights = [];
     const warnings = [];
     
-    // ========== PHASE 1: ATS PARSABILITY (25 points) ==========
+    //  ATS PARSABILITY
     console.log("📋 Phase 1: ATS Parsability Analysis...");
     
-    // 1.1 File Format Detection (5 points)
     const hasNoSpecialChars = !/[□■▢▣▤▥▦▧▨▩▪▫▬▭▮▯]/u.test(rawText);
     const hasNoImages = !/(graphic|image|photo|picture|img)/i.test(rawText);
     if (hasNoSpecialChars && hasNoImages) {
@@ -42,7 +39,6 @@ async function calculateATSScore(resumeText) {
       warnings.push("⚠️ Contains special characters that may break ATS parsing");
     }
     
-    // 1.2 Readable Text Ratio (5 points)
     const textRatio = (rawText.replace(/[^a-zA-Z0-9\s]/g, '').length / charCount) * 100;
     if (textRatio > 85) {
       score += 5;
@@ -53,7 +49,6 @@ async function calculateATSScore(resumeText) {
       atsFactors.push({ factor: "Text Readability", score: 3, max: 5 });
     }
     
-    // 1.3 Section Header Detection (5 points)
     const sectionHeaders = detectSectionHeaders(rawText);
     const headerScore = Math.min(sectionHeaders.length * 1, 5);
     score += headerScore;
@@ -63,7 +58,6 @@ async function calculateATSScore(resumeText) {
       strengths.push(`✓ Strong section structure (${sectionHeaders.length} sections)`);
     }
     
-    // 1.4 Bullet Consistency (5 points)
     const bulletStyles = countBulletStyles(rawText);
     const bulletScore = bulletStyles.consistent ? 5 : 2;
     score += bulletScore;
@@ -79,7 +73,6 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // 1.5 Table Detection (5 points) - Tables often break ATS
     const hasTables = /┌|┬|┐|├|┼|┤|└|┴|┘|╔|╦|╗|╠|╬|╣|╚|╩|╝/.test(rawText) || 
                      /\+-+\+/g.test(rawText) ||
                      (rawText.match(/\|/g) || []).length > 10;
@@ -98,10 +91,9 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // ========== PHASE 2: CONTENT OPTIMIZATION (40 points) ==========
+    //PHASE 2: CONTENT OPTIMIZATION 
     console.log("📝 Phase 2: Content Optimization Analysis...");
     
-    // 2.1 Keyword Density Analysis (10 points)
     const keywordAnalysis = analyzeKeywords(rawText);
     score += keywordAnalysis.score;
     atsFactors.push({ factor: "Keyword Optimization", score: keywordAnalysis.score, max: 10 });
@@ -117,7 +109,6 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // 2.2 Action Verb Analysis (10 points)
     const verbAnalysis = analyzeActionVerbs(rawText);
     score += verbAnalysis.score;
     atsFactors.push({ factor: "Action Verbs", score: verbAnalysis.score, max: 10 });
@@ -132,7 +123,6 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // 2.3 Quantifiable Achievements (10 points)
     const achievementAnalysis = analyzeAchievements(rawText);
     score += achievementAnalysis.score;
     atsFactors.push({ factor: "Quantifiable Results", score: achievementAnalysis.score, max: 10 });
@@ -147,7 +137,6 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // 2.4 Professional Tone (5 points)
     const toneAnalysis = analyzeProfessionalTone(rawText);
     score += toneAnalysis.score;
     atsFactors.push({ factor: "Professional Tone", score: toneAnalysis.score, max: 5 });
@@ -156,7 +145,6 @@ async function calculateATSScore(resumeText) {
       strengths.push("✓ Professional writing style maintained");
     }
     
-    // 2.5 Avoid Buzzword Overuse (5 points)
     const buzzwordAnalysis = analyzeBuzzwords(rawText);
     score += buzzwordAnalysis.score;
     atsFactors.push({ factor: "Buzzword Balance", score: buzzwordAnalysis.score, max: 5 });
@@ -169,10 +157,10 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // ========== PHASE 3: STRUCTURE & FORMAT (35 points) ==========
+    // PHASE 3: STRUCTURE & FORMAT 
     console.log("🏗️ Phase 3: Structure & Format Analysis...");
     
-    // 3.1 Contact Information (10 points)
+    
     const contactAnalysis = analyzeContactInfo(rawText);
     score += contactAnalysis.score;
     atsFactors.push({ factor: "Contact Information", score: contactAnalysis.score, max: 10 });
@@ -189,7 +177,6 @@ async function calculateATSScore(resumeText) {
       strengths.push("✓ Complete contact information");
     }
     
-    // 3.2 Section Completeness (10 points)
     const sectionAnalysis = analyzeSections(rawText);
     score += sectionAnalysis.score;
     atsFactors.push({ factor: "Section Completeness", score: sectionAnalysis.score, max: 10 });
@@ -202,7 +189,6 @@ async function calculateATSScore(resumeText) {
       });
     });
     
-    // 3.3 Length Optimization (5 points)
     const lengthAnalysis = analyzeLength(wordCount, lines.length);
     score += lengthAnalysis.score;
     atsFactors.push({ factor: "Length Optimization", score: lengthAnalysis.score, max: 5 });
@@ -217,7 +203,6 @@ async function calculateATSScore(resumeText) {
       strengths.push("✓ Optimal resume length");
     }
     
-    // 3.4 Chronological Order (5 points)
     const chronological = isChronologicalOrder(rawText);
     if (chronological) {
       score += 5;
@@ -232,28 +217,22 @@ async function calculateATSScore(resumeText) {
       });
     }
     
-    // 3.5 File Size Optimization (5 points) - Simulated
     score += 5; // Assuming optimal since we process text
     atsFactors.push({ factor: "File Optimization", score: 5, max: 5 });
     
-    // ========== FINAL CALCULATION & GRADING ==========
+    //  FINAL CALCULATION & GRADING 
     
-    // Ensure score is within 0-100
     score = Math.max(0, Math.min(100, Math.round(score)));
     
-    // Industry-standard grading curve (strict)
     const finalScore = applyGradingCurve(score);
     
-    // Generate professional summary
     const summary = generateProfessionalSummary(finalScore, strengths, improvements);
     
-    // Sort improvements by priority
     improvements.sort((a, b) => {
       const priorityOrder = { high: 3, medium: 2, low: 1 };
       return priorityOrder[b.priority] - priorityOrder[a.priority];
     });
     
-    // Add ATS-specific insights
     if (finalScore >= 90) {
       insights.push("🎯 Will pass 95%+ of ATS systems");
       insights.push("✅ Meets Fortune 500 company standards");
@@ -291,7 +270,7 @@ async function calculateATSScore(resumeText) {
     };
   }
   
-  // ========== ANALYSIS FUNCTIONS ==========
+  //  ANALYSIS FUNCTIONS 
   
   function detectSectionHeaders(text) {
     const headers = [];
@@ -331,7 +310,7 @@ async function calculateATSScore(resumeText) {
     
     return {
       total,
-      consistent: total === 0 || maxStyle / total > 0.8, // 80% consistency
+      consistent: total === 0 || maxStyle / total > 0.8, 
       primaryStyle: Object.entries(bullets).reduce((a, b) => b[1] > a[1] ? b : a)[0]
     };
   }
@@ -361,9 +340,8 @@ async function calculateATSScore(resumeText) {
     const totalFound = foundTech.length + foundSoft.length;
     const density = (totalFound / (text.split(/\s+/).length / 100)).toFixed(2); // per 100 words
     
-    // Score: 10 points max
-    let score = Math.min(foundTech.length * 0.5, 7); // Tech keywords more valuable
-    score += Math.min(foundSoft.length * 0.3, 3); // Soft skills
+    let score = Math.min(foundTech.length * 0.5, 7); 
+    score += Math.min(foundSoft.length * 0.3, 3); 
     
     return {
       score: Math.min(10, Math.round(score)),
@@ -392,9 +370,8 @@ async function calculateATSScore(resumeText) {
       new RegExp(`\\b${verb}\\b`, 'i').test(text)
     );
     
-    // Score: 10 points max
     let score = Math.min(foundStrong.length * 1.2, 8);
-    score -= Math.min(foundWeak.length * 0.5, 3); // Penalize weak verbs
+    score -= Math.min(foundWeak.length * 0.5, 3); 
     score = Math.max(0, score);
     
     return {
@@ -425,7 +402,6 @@ async function calculateATSScore(resumeText) {
       count += matches.length;
     });
     
-    // Score: 10 points max
     const score = Math.min(count * 2, 10);
     
     return {
@@ -599,17 +575,16 @@ async function calculateATSScore(resumeText) {
   }
   
   function applyGradingCurve(rawScore) {
-    // Industry-standard strict grading
-    if (rawScore >= 95) return 100; // Perfect score rare
-    if (rawScore >= 90) return 95;  // Excellent
-    if (rawScore >= 85) return 90;  // Very strong
-    if (rawScore >= 80) return 85;  // Strong
-    if (rawScore >= 75) return 80;  // Good
-    if (rawScore >= 70) return 75;  // Above average
-    if (rawScore >= 65) return 70;  // Average
-    if (rawScore >= 60) return 65;  // Below average
-    if (rawScore >= 50) return 60;  // Needs work
-    return Math.max(30, rawScore);   // Poor
+    if (rawScore >= 95) return 100; 
+    if (rawScore >= 90) return 95; 
+    if (rawScore >= 85) return 90;
+    if (rawScore >= 80) return 85;  
+    if (rawScore >= 75) return 80;  
+    if (rawScore >= 70) return 75;  
+    if (rawScore >= 65) return 70;  
+    if (rawScore >= 60) return 65;  
+    if (rawScore >= 50) return 60;  
+    return Math.max(30, rawScore);   
   }
   
   function generateProfessionalSummary(score, strengths, improvements) {

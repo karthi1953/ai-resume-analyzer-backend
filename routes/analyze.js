@@ -9,7 +9,6 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-// POST /api/analyze
 router.post("/analyze", upload.single("resume"), async (req, res) => {
   try {
     if (!req.file) {
@@ -37,8 +36,6 @@ router.post("/analyze", upload.single("resume"), async (req, res) => {
       });
     }
 
-    // Calculate score (using enhanced algorithm only)
-    console.log("🔍 Analyzing with enhanced algorithm...");
     const analysis = await calculateATSScore(resumeText);
 
     res.json({
